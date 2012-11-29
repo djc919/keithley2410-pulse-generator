@@ -36,21 +36,6 @@ using namespace std;
 
 time_t startingtime;
 
-GtkWidget *window;
-GtkWidget *table;
-GtkWidget *label1;
-GtkWidget *entry1;
-GtkWidget *label2;
-GtkWidget *entry2;
-GtkWidget *label3;
-GtkWidget *entry3;
-GtkWidget *button1;
-GtkWidget *button2;
-GtkWidget *button3;
-
-// Added for testing GTK
-GtkWidget *button4;
-
 char  Buffer[101];             
 //FILE *outputfile;
 ofstream outputfile;
@@ -484,82 +469,7 @@ int main(int argc, char* argv[])
    kdevice.write(":FORM:ELEM CURR");
    kdevice.write(":TRIG:COUN 1");
 
-	/*-- Create the new window --*/
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-
-	/*-- Set the window to be 640 x 480 pixels --*/
-	gtk_window_set_default_size (GTK_WINDOW(window), 640, 480);
-//	gtk_window_set_default_size (GTK_WINDOW(window), 500, 100);
-
-	/*-- Set the window title --*/
-	gtk_window_set_title(GTK_WINDOW (window), "Keithley 2410 Control");
-
-
-	/*-- Create the buttons --*/
-
-	label1  = gtk_label_new("Required Voltage (V)\n(press <Enter> to set):");
-	entry1  = gtk_entry_new();
-	label2  = gtk_label_new("Set Voltage (V):");
-	entry2  = gtk_entry_new();
-	label3  = gtk_label_new("Current (A):");
-	entry3  = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY (entry1), "0.00");
-	gtk_entry_set_text(GTK_ENTRY (entry2), "0.00");
-	button1 = gtk_button_new_with_label("ON");
-	button2 = gtk_button_new_with_label("OFF");
-	button3 = gtk_button_new_with_label("QUIT");
-
-	// Added to test GTK
-	button4 = gtk_button_new_with_label("TEST");
-
-	// Create the 1x2 table 
-	// The table will expand as new widgets are placed in new cells
-	table = gtk_table_new(1, 2, TRUE);
-
-	// void                gtk_table_attach_defaults           (GtkTable *table,
-    //                                                     GtkWidget *widget,
-    //                                                     guint left_attach,
-    //                                                     guint right_attach,
-    //                                                     guint top_attach,
-    //                                                     guint bottom_attach);
-	gtk_table_attach_defaults(GTK_TABLE(table), label1,       0, 1, 0, 1);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry1,       1, 3, 0, 1);
-	gtk_table_attach_defaults(GTK_TABLE(table), button1,      0, 1, 1, 2);
-	gtk_table_attach_defaults(GTK_TABLE(table), button2,      1, 2, 1, 2);
-	gtk_table_attach_defaults(GTK_TABLE(table), button3,      2, 3, 1, 2);
-	gtk_table_attach_defaults(GTK_TABLE(table), label2,       0, 1, 2, 3);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry2,       1, 3, 2, 3);
-	gtk_table_attach_defaults(GTK_TABLE(table), label3,       0, 1, 3, 4);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry3,       1, 3, 3, 4);
 	
-	// Added to test GTK
-	gtk_table_attach_defaults(GTK_TABLE(table), button4,      0, 3, 4, 5);
-
-	/*-- Connect the button to the button_was_clicked function --*/
-	gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(button_clicked1), NULL);
-	gtk_signal_connect(GTK_OBJECT(button2), "clicked", GTK_SIGNAL_FUNC(button_clicked2), NULL);
-	gtk_signal_connect(GTK_OBJECT(button3), "clicked", GTK_SIGNAL_FUNC(button_clicked3), NULL);
-	gtk_signal_connect(GTK_OBJECT(button4), "clicked", GTK_SIGNAL_FUNC(button_clicked4), NULL);
-	gtk_signal_connect(GTK_OBJECT(entry1), "activate", GTK_SIGNAL_FUNC(setvoltage), NULL); 
-		/*-- Add the table to the window --*/
-	gtk_table_set_row_spacings(GTK_TABLE(table),5);
-	gtk_table_set_col_spacings(GTK_TABLE(table),5);
-	gtk_container_add(GTK_CONTAINER(window), table);
-
-
-
-
-
-	/*-- Set window border to zero so that text area takes up the whole window --*/
-	gtk_container_border_width (GTK_CONTAINER (window), 5);
-
-	//g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc) &func, NULL,NULL); //caused error -410 when the Keithley was plugged in
-	g_timeout_add_full(G_PRIORITY_DEFAULT_IDLE, 1000, (GSourceFunc) &func, NULL,NULL);
-
-
-	/*-- Display the widgets --*/
-
-	gtk_widget_show_all(window);
 
 	/*-- Start the GTK event loop --*/
 	gdk_threads_enter();
