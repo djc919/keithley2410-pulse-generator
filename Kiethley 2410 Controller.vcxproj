@@ -35,7 +35,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Program Files %28x86%29\Keithley Instruments\KI-488\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Keithley Instruments\KI-488\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
