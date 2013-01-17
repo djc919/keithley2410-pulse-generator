@@ -23,8 +23,8 @@ private:
 	void on_menu_choices_one();
 	void on_menu_choices_two();
 
-	void on_button_file_clicked();
-	void on_button_folder_clicked();
+	void on_button_file_open_clicked();
+	void on_button_file_save_clicked();
 
 	//Member widgets:
 	
