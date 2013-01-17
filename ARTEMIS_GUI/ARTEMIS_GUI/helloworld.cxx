@@ -7,10 +7,13 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 	m_spinbutton_amp(m_adjustment_amp),
 	m_table(5, 2, true),
 	m_button1("Button 1"),
-	m_button2("Button 2") { 
+	m_button2("Button 2"),
+	m_frame_currentpulse("Current Pulse"),
+	m_label_currentpulse("Use these options to configure\n1 mA pulsed current mode")
+	{ 
 
-	set_title("A Remote Terminal ExperiMent Interface System - ARTEMIS");
-	set_default_size(800,600);
+	set_title("ARTEMIS - A Remote Terminal ExperiMent Interface System");
+	set_default_size(400,300);
 
 	//Menu Bar code
 	add(m_box1);
@@ -18,9 +21,14 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 
 	m_refActionGroup = Gtk::ActionGroup::create();
 
-	//File|New sub menu:
-	m_refActionGroup->add(Gtk::Action::create("FileNew",Gtk::Stock::NEW, "_New", "Create a new file"),
-		sigc::mem_fun(*this, &HelloWorld::on_menu_file_new_generic));
+	////File|Open sub menu:
+	//m_refActionGroup->add(Gtk::Action::create("FileOpenFolder",
+	//	Gtk::Stock::OPEN, "Open folder"),
+	//	sigc::mem_fun(*this, &HelloWorld::on_button_folder_clicked));
+
+	//m_refActionGroup->add(Gtk::Action::create("FileOpenFile",
+	//	Gtk::Stock::OPEN, "Open file"),
+	//	sigc::mem_fun(*this, &HelloWorld::on_button_file_clicked));
 
 	//File menu:
 	m_refActionGroup->add(Gtk::Action::create("FileMenu", "File"));
@@ -29,7 +37,7 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 	m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW),
 		sigc::mem_fun(*this, &HelloWorld::on_menu_file_new_generic));
 	m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN),
-		sigc::mem_fun(*this, &HelloWorld::on_menu_others));
+		sigc::mem_fun(*this, &HelloWorld::on_button_file_clicked));
 	m_refActionGroup->add(Gtk::Action::create("FileQuit", Gtk::Stock::QUIT),
 		sigc::mem_fun(*this, &HelloWorld::on_menu_file_quit));
 
@@ -72,8 +80,7 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 		"<ui>"
 		"	<menubar name='MenuBar'>"
 		"		<menu action='FileMenu'>"
-		"			<menu action='FileNew'>"
-		"			</menu>"
+		"			<menuitem action='FileNew'/>"
 		"			<menuitem action='FileOpen'/>"
 		"			<separator/>"
 		"			<menuitem action='FileQuit'/>"
@@ -139,8 +146,12 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 
 	m_button2.show();
 
-	m_spinbutton_amp.set_wrap();
-	m_table.attach(m_spinbutton_amp, 0, 1, 0, 1);
+	//m_spinbutton_amp.set_wrap();
+	//m_table.attach(m_spinbutton_amp, 0, 1, 0, 1);
+
+	m_frame_currentpulse.add(m_label_currentpulse);
+	m_table.attach(m_frame_currentpulse, 0, 1, 0, 1, Gtk::EXPAND, Gtk::EXPAND, 0, 15);
+
 	m_box1.show();
 
 	m_box1.pack_end(m_table);
@@ -198,5 +209,108 @@ void HelloWorld::on_menu_choices_two() {
 void HelloWorld::on_button_clicked(Glib::ustring data) {
 
 	std::cout <<"Hello World -" << data << "was pressed" << std::endl;
+
+}
+
+//void HelloWorld::on_button_folder_clicked() {
+//
+//	Gtk::FileChooserDialog dialog("Please choose a folder",
+//		Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
+//	dialog.set_transient_for(*this);
+//
+//	//Add response buttons to the dialog
+//	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+//	dialog.add_button("Select", Gtk::RESPONSE_OK);
+//
+//	int result = dialog.run();
+//
+//	//Handle the response
+//	switch(result) {
+//
+//		case(Gtk::RESPONSE_OK): {
+//
+//			std::cout <<"Select clicked." << std::endl;
+//			std::cout << "Folder selected: " << dialog.get_filename()
+//				<< std::endl;
+//			break;
+//
+//		}
+//		
+//		case(Gtk::RESPONSE_CANCEL): {
+//
+//			std::cout << "Cancel clicked." << std::endl;
+//			break;
+//
+//		}
+//
+//		default: {
+//
+//			std::cout << "Unexpected button clicked." << std::endl;
+//			break;
+//
+//		}
+//
+//	}
+//
+//}
+
+void HelloWorld::on_button_file_clicked() {
+
+	Gtk::FileChooserDialog dialog("Please choose file",
+		Gtk::FILE_CHOOSER_ACTION_OPEN);
+	dialog.set_transient_for(*this);
+
+	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
+
+	//Add filters, so that only certain file types can be selected:
+
+	Gtk::FileFilter filter_text;
+	filter_text.set_name("Text files");
+	filter_text.add_mime_type("text/plain");
+	dialog.add_filter(filter_text);
+
+	Gtk::FileFilter filter_cpp;
+	filter_cpp.set_name("C/C++ files");
+	filter_cpp.add_mime_type("text/x-c");
+	filter_cpp.add_mime_type("text/x-c++");
+	filter_cpp.add_mime_type("text/x-c-header");
+	dialog.add_filter(filter_cpp);
+
+	Gtk::FileFilter filter_any;
+	filter_any.set_name("Any files");
+	filter_any.add_pattern("*");
+	dialog.add_filter(filter_any);
+
+	int result = dialog.run();
+
+	switch(result) {
+
+		case(Gtk::RESPONSE_OK): {
+
+			std::cout << "Open clicked." << std::endl;
+
+			//Notice that this is an std::string not a Glib::ustring
+			std::string filename = dialog.get_filename();
+			std::cout << "File selected: " << filename << std::endl;
+			break;
+
+		}
+
+		case(Gtk::RESPONSE_CANCEL): {
+
+			std::cout << "Cancel clicked." << std::endl;
+			break;
+
+		}
+
+		default: {
+
+			std::cout << "Unexpected button clicked." << std::endl;
+			break;
+
+		}
+
+	}
 
 }
