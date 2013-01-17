@@ -19,14 +19,17 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 	m_refActionGroup = Gtk::ActionGroup::create();
 
 	//File|New sub menu:
-	//m_refActionGroup->add(Gtk::Action::create("FileNew",Gtk::Stock::NEW, "_New", "Create a new file"),
-		//sigc::mem_fun(*this, &HelloWorld::on_menu_file_new_generic));
+	m_refActionGroup->add(Gtk::Action::create("FileNew",Gtk::Stock::NEW, "_New", "Create a new file"),
+		sigc::mem_fun(*this, &HelloWorld::on_menu_file_new_generic));
 
 	//File menu:
 	m_refActionGroup->add(Gtk::Action::create("FileMenu", "File"));
 	
 	//Sub menu:
-	m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW));
+	m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW),
+		sigc::mem_fun(*this, &HelloWorld::on_menu_file_new_generic));
+	m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN),
+		sigc::mem_fun(*this, &HelloWorld::on_menu_others));
 	m_refActionGroup->add(Gtk::Action::create("FileQuit", Gtk::Stock::QUIT),
 		sigc::mem_fun(*this, &HelloWorld::on_menu_file_quit));
 
@@ -37,15 +40,22 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 	m_refActionGroup->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE),
 		sigc::mem_fun(*this, &HelloWorld::on_menu_others));
 
-	//Choices menu, to demonstrate radio items
-	m_refActionGroup->add(Gtk::Action::create("ChoicesMenu", "Choices"));
-	Gtk::RadioAction::Group group_userlevel;
-	m_refChoiceOne = Gtk::RadioAction::create(group_userlevel, "ChoiceOne", "One");
-	m_refActionGroup->add(m_refChoiceOne,
-		sigc::mem_fun(*this, &HelloWorld::on_menu_choices_one));
-	m_refChoiceTwo = Gtk::RadioAction::create(group_userlevel, "ChoiceTwo", "Two");
-	m_refActionGroup->add(m_refChoiceTwo,
-		sigc::mem_fun(*this, &HelloWorld::on_menu_choices_two));
+	////Choices menu, to demonstrate radio items
+	//m_refActionGroup->add(Gtk::Action::create("ChoicesMenu", "Choices"));
+	//Gtk::RadioAction::Group group_userlevel;
+	//m_refChoiceOne = Gtk::RadioAction::create(group_userlevel, "ChoiceOne", "One");
+	//m_refActionGroup->add(m_refChoiceOne,
+	//	sigc::mem_fun(*this, &HelloWorld::on_menu_choices_one));
+	//m_refChoiceTwo = Gtk::RadioAction::create(group_userlevel, "ChoiceTwo", "Two");
+	//m_refActionGroup->add(m_refChoiceTwo,
+	//	sigc::mem_fun(*this, &HelloWorld::on_menu_choices_two));
+
+	//View menu
+	m_refActionGroup->add(Gtk::Action::create("ViewMenu", "View"));
+	m_refActionGroup->add(Gtk::Action::create("ViewZoomIn", Gtk::Stock::ZOOM_IN),
+		sigc::mem_fun(*this, &HelloWorld::on_menu_others));
+	m_refActionGroup->add(Gtk::Action::create("ViewZoomOut", Gtk::Stock::ZOOM_OUT),
+		sigc::mem_fun(*this, &HelloWorld::on_menu_others));
 
 	//Help menu
 	m_refActionGroup->add(Gtk::Action::create("HelpMenu", "Help"));
@@ -62,8 +72,9 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 		"<ui>"
 		"	<menubar name='MenuBar'>"
 		"		<menu action='FileMenu'>"
-		"			<menu action ='FileNew'>"
-		"		</menu>"
+		"			<menu action='FileNew'>"
+		"			</menu>"
+		"			<menuitem action='FileOpen'/>"
 		"			<separator/>"
 		"			<menuitem action='FileQuit'/>"
 		"		</menu>"
@@ -71,9 +82,13 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 		"			<menuitem action='EditCopy'/>"
 		"			<menuitem action='EditPaste'/>"
 		"		</menu>"
-		"		<menu action='ChoicesMenu'>"
-		"			<menuitem action='ChoiceOne'/>"
-		"			<menuitem action='ChoiceTwo'/>"
+		//"		<menu action='ChoicesMenu'>"
+		//"			<menuitem action='ChoiceOne'/>"
+		//"			<menuitem action='ChoiceTwo'/>"
+		//"		</menu>"
+		"		<menu action='ViewMenu'>"
+		"			<menuitem action='ViewZoomIn'/>"
+		"			<menuitem action='ViewZoomOut'/>"
 		"		</menu>"
 		"		<menu action='HelpMenu'>"
 		"			<menuitem action='HelpAbout'/>"
