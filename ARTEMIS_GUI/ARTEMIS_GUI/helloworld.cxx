@@ -27,9 +27,9 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 	m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW),
 		sigc::mem_fun(*this, &HelloWorld::on_menu_file_new_generic));
 	m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN),
-		sigc::mem_fun(*this, &HelloWorld::on_button_file_open_clicked));
+		sigc::mem_fun(*this, &HelloWorld::on_menu_file_open_clicked));
 	m_refActionGroup->add(Gtk::Action::create("FileSave", Gtk::Stock::SAVE),
-		sigc::mem_fun(*this, &HelloWorld::on_button_file_save_clicked));
+		sigc::mem_fun(*this, &HelloWorld::on_menu_file_save_clicked));
 	m_refActionGroup->add(Gtk::Action::create("FileQuit", Gtk::Stock::QUIT),
 		sigc::mem_fun(*this, &HelloWorld::on_menu_file_quit));
 
@@ -53,7 +53,7 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 	m_refActionGroup->add(Gtk::Action::create("HelpMenu", "Help"));
 
 	m_refActionGroup->add(Gtk::Action::create("HelpAbout", Gtk::Stock::HELP),
-		sigc::mem_fun(*this, &HelloWorld::on_menu_others));
+		sigc::mem_fun(*this, &HelloWorld::on_menu_help_about_clicked));
 
 	m_refUIManager =Gtk::UIManager::create();
 	m_refUIManager->insert_action_group(m_refActionGroup);
@@ -75,10 +75,6 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 		"			<menuitem action='EditCopy'/>"
 		"			<menuitem action='EditPaste'/>"
 		"		</menu>"
-		//"		<menu action='ChoicesMenu'>"
-		//"			<menuitem action='ChoiceOne'/>"
-		//"			<menuitem action='ChoiceTwo'/>"
-		//"		</menu>"
 		"		<menu action='ViewMenu'>"
 		"			<menuitem action='ViewZoomIn'/>"
 		"			<menuitem action='ViewZoomOut'/>"
@@ -87,10 +83,6 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 		"			<menuitem action='HelpAbout'/>"
 		"		</menu>"
 		"	</menubar>"
-//		"	<toolbar name='ToolBar'>"
-//		"		<toolbaritem action='FileNew'/>"
-//		"		<toolbaritem action='FileQuit'/>"
-//		"	</toolbar>"
 		"</ui>";
 
 	try	{
@@ -114,7 +106,7 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 	if(pToolbar)
 		m_box1.pack_start(*pToolbar, Gtk::PACK_SHRINK);
 
-	//Now when the button is clokced, we call the "on_button_clicked" function
+	//Now when the button is clicked, we call the "on_button_clicked" function
 	//with a pointer to "button 1" as its argument
 	m_button1.signal_clicked().connect(sigc::bind<Glib::ustring>(
 		sigc::mem_fun(*this, &HelloWorld::on_button_clicked), "button 1"));
@@ -148,57 +140,28 @@ HelloWorld::HelloWorld() : m_adjustment_amp(0.0, 0.0, 1000.0, 0.000001, 0.0001, 
 
 HelloWorld::~HelloWorld() {}
 
-void HelloWorld::on_menu_file_quit() {
+void HelloWorld::on_menu_file_quit()
 
+{
 	hide();
-
 }
 
-void HelloWorld::on_menu_file_new_generic() {
-
+void HelloWorld::on_menu_file_new_generic()
+{
 	std::cout << "A File|New menu item was selected." << std::endl;
-
 }
 
-void HelloWorld::on_menu_others() {
-
+void HelloWorld::on_menu_others()
+{
 	std::cout << "A menu item was selected." << std::endl;
-
 }
 
-void HelloWorld::on_menu_choices_one() {
-
-	Glib::ustring message;
-
-	if(m_refChoiceOne->get_active())
-		message = "Choice 1 was selected.";
-	else
-		message = "Choice 1 was deselected.";
-
-	std::cout << message << std::endl;
-
-}
-
-void HelloWorld::on_menu_choices_two() {
-
-	Glib::ustring message;
-
-	if(m_refChoiceTwo->get_active())
-		message = "Choice 2 was selected.";
-	else
-		message = "Choice 2 was deselected.";
-
-	std::cout << message << std::endl;
-
-}
-
-void HelloWorld::on_button_clicked(Glib::ustring data) {
-
+void HelloWorld::on_button_clicked(Glib::ustring data)
+{
 	std::cout <<"Hello World -" << data << "was pressed" << std::endl;
-
 }
 
-void HelloWorld::on_button_file_open_clicked() {
+void HelloWorld::on_menu_file_open_clicked() {
 
 	Gtk::FileChooserDialog dialog("Please choose file",
 		Gtk::FILE_CHOOSER_ACTION_OPEN);
@@ -259,7 +222,7 @@ void HelloWorld::on_button_file_open_clicked() {
 
 }
 
-void HelloWorld::on_button_file_save_clicked() {
+void HelloWorld::on_menu_file_save_clicked() {
 
 	Gtk::FileChooserDialog dialog("Please choose a file name",
 		Gtk::FILE_CHOOSER_ACTION_SAVE);
@@ -294,6 +257,45 @@ void HelloWorld::on_button_file_save_clicked() {
 			std::cout << "Unexpected button clicked." << std::endl;
 			break;
 
+		}
+
+	}
+
+}
+
+void HelloWorld::on_menu_help_about_clicked() {
+
+	Gtk::MessageDialog dialog(*this, "This is MessageDialog, it will help you!",
+		false, Gtk::MESSAGE_INFO,
+		Gtk::BUTTONS_OK_CANCEL);
+	dialog.set_secondary_text(
+		"This program was created by somecompany(R).");
+
+	int result = dialog.run();
+
+	switch(result)
+	
+	{
+
+		case(Gtk::RESPONSE_OK):
+
+		{
+			std::cout << "OK clicked." << std::endl;
+			break;
+		}
+
+		case(Gtk::RESPONSE_CANCEL):
+
+		{
+			std::cout << "Cancel clicked." << std::endl;
+			break;
+		}
+
+		default:
+
+		{
+			std::cout << "Unexpected button clicked." << std::endl;
+			break;
 		}
 
 	}
